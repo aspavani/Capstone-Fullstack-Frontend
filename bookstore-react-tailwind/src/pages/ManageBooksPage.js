@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 const ManageBooksPage = () => {
   const [books, setBooks] = useState([]);
   const [selectedBooks, setSelectedBooks] = useState(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Number of items per page
 
   // Fetch the list of books from the API when the component mounts
   useEffect(() => {
@@ -48,26 +50,32 @@ const ManageBooksPage = () => {
   };
 
   // Dummy data
-  const dummyData = [
-    {
-      id: 'dummy1',
-      image: 'https://via.placeholder.com/50', // Placeholder image URL
-      title: 'Dummy Book 1',
-      author: 'Author 1',
-      genre: 'Genre 1',
-      publicationDate: '2024-01-01',
-      price: 100
-    },
-    {
-      id: 'dummy2',
-      image: 'https://via.placeholder.com/50', // Placeholder image URL
-      title: 'Dummy Book 2',
-      author: 'Author 2',
-      genre: 'Genre 2',
-      publicationDate: '2024-01-02',
-      price: 200
+  const dummyData = Array.from({ length: 10 }, (_, index) => ({
+    id: `dummy${index + 1}`,
+    image: 'https://via.placeholder.com/50', // Placeholder image URL
+    title: `Dummy Book ${index + 1}`,
+    author: `Author ${index + 1}`,
+    genre: `Genre ${index + 1}`,
+    publicationDate: `2024-01-${index + 1}`,
+    price: (index + 1) * 100
+  }));
+
+  // Pagination logic
+  const totalItems = books.length + dummyData.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  
+  // Get current page data
+  const currentItems = [
+    ...dummyData,
+    ...books
+  ].slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  // Change page handler
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
     }
-  ];
+  };
 
   return (
     <div>
@@ -102,13 +110,13 @@ const ManageBooksPage = () => {
                     <input
                       type="checkbox"
                       onChange={() => {
-                        if (selectedBooks.size === books.length + 2) {
+                        if (selectedBooks.size === totalItems) {
                           setSelectedBooks(new Set());
                         } else {
-                          setSelectedBooks(new Set([...books.map(book => book.id), 'dummy1', 'dummy2']));
+                          setSelectedBooks(new Set([...dummyData.map(book => book.id), ...books.map(book => book.id)]));
                         }
                       }}
-                      checked={selectedBooks.size === books.length + 2}
+                      checked={selectedBooks.size === totalItems}
                     />
                   </th>
                   <th style={{ border: '1px solid black', padding: '8px' }}>BookId</th>
@@ -122,37 +130,8 @@ const ManageBooksPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {/* Dummy Rows */}
-                {dummyData.map(book => (
-                  <tr key={book.id}>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>
-                      <input
-                        type="checkbox"
-                        checked={selectedBooks.has(book.id)}
-                        onChange={() => handleCheckboxChange(book.id)}
-                      />
-                    </td>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>{book.id}</td>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>
-                      <img
-                        src={book.image}
-                        alt={book.title}
-                        style={{ width: '50px', height: 'auto' }}
-                      />
-                    </td>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>{book.title}</td>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>{book.author}</td>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>{book.genre}</td>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>{new Date(book.publicationDate).toLocaleDateString()}</td>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>{book.price}</td>
-                    <td style={{ border: '1px solid black', padding: '8px' }}>
-                      <button onClick={() => handleEditBook(book.id)} style={{ marginRight: '8px' }}>Edit</button>
-                      <button onClick={() => handleDeleteSelected(book.id)}>Delete</button>
-                    </td>
-                  </tr>
-                ))}
-                {/* Actual Rows */}
-                {books.map(book => (
+                {/* Display Data with Pagination */}
+                {currentItems.map(book => (
                   <tr key={book.id}>
                     <td style={{ border: '1px solid black', padding: '8px' }}>
                       <input
@@ -182,6 +161,23 @@ const ManageBooksPage = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+          
+          {/* Pagination Controls */}
+          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span style={{ margin: '0 10px' }}>Page {currentPage} of {totalPages}</span>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>
