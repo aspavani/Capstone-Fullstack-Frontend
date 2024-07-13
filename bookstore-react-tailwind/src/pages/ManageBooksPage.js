@@ -5,6 +5,8 @@ const ManageBooksPage = () => {
   const [books, setBooks] = useState([]);
   const [selectedBooks, setSelectedBooks] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortKey, setSortKey] = useState('id'); // Default sort by ID
+  const [sortDirection, setSortDirection] = useState('asc'); // Default ascending
   const itemsPerPage = 5; // Number of items per page
 
   // Fetch the list of books from the API when the component mounts
@@ -60,20 +62,39 @@ const ManageBooksPage = () => {
     price: (index + 1) * 100
   }));
 
+  // Sort data
+  const sortData = (data) => {
+    return data.sort((a, b) => {
+      if (a[sortKey] < b[sortKey]) return sortDirection === 'asc' ? -1 : 1;
+      if (a[sortKey] > b[sortKey]) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  };
+
   // Pagination logic
   const totalItems = books.length + dummyData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   
   // Get current page data
-  const currentItems = [
+  const currentItems = sortData([
     ...dummyData,
     ...books
-  ].slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  ]).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   // Change page handler
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
+    }
+  };
+
+  // Handle column sort
+  const handleSort = (key) => {
+    if (sortKey === key) {
+      setSortDirection(prevDirection => prevDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortKey(key);
+      setSortDirection('asc');
     }
   };
 
@@ -119,13 +140,43 @@ const ManageBooksPage = () => {
                       checked={selectedBooks.size === totalItems}
                     />
                   </th>
-                  <th style={{ border: '1px solid black', padding: '8px' }}>BookId</th>
+                  <th style={{ border: '1px solid black', padding: '8px' }} onClick={() => handleSort('id')}>
+                    BookId
+                    {sortKey === 'id' && (
+                      <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
+                    )}
+                  </th>
                   <th style={{ border: '1px solid black', padding: '8px' }}>Image</th>
-                  <th style={{ border: '1px solid black', padding: '8px' }}>Title</th>
-                  <th style={{ border: '1px solid black', padding: '8px' }}>Author</th>
-                  <th style={{ border: '1px solid black', padding: '8px' }}>Genre</th>
-                  <th style={{ border: '1px solid black', padding: '8px' }}>Publication Date</th>
-                  <th style={{ border: '1px solid black', padding: '8px' }}>Price (₹)</th>
+                  <th style={{ border: '1px solid black', padding: '8px' }} onClick={() => handleSort('title')}>
+                    Title
+                    {sortKey === 'title' && (
+                      <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
+                    )}
+                  </th>
+                  <th style={{ border: '1px solid black', padding: '8px' }} onClick={() => handleSort('author')}>
+                    Author
+                    {sortKey === 'author' && (
+                      <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
+                    )}
+                  </th>
+                  <th style={{ border: '1px solid black', padding: '8px' }} onClick={() => handleSort('genre')}>
+                    Genre
+                    {sortKey === 'genre' && (
+                      <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
+                    )}
+                  </th>
+                  <th style={{ border: '1px solid black', padding: '8px' }} onClick={() => handleSort('publicationDate')}>
+                    Publication Date
+                    {sortKey === 'publicationDate' && (
+                      <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
+                    )}
+                  </th>
+                  <th style={{ border: '1px solid black', padding: '8px' }} onClick={() => handleSort('price')}>
+                    Price (₹)
+                    {sortKey === 'price' && (
+                      <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
+                    )}
+                  </th>
                   <th style={{ border: '1px solid black', padding: '8px' }}>Actions</th>
                 </tr>
               </thead>
