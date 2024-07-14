@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FaEdit, FaTrash } from 'react-icons/fa'; // Import icons from react-icons
 
 const ManageBooksPage = () => {
   const [books, setBooks] = useState([]);
@@ -205,8 +206,20 @@ const ManageBooksPage = () => {
                     <td style={{ border: '1px solid black', padding: '8px' }}>{new Date(book.publicationDate).toLocaleDateString()}</td>
                     <td style={{ border: '1px solid black', padding: '8px' }}>{book.price}</td>
                     <td style={{ border: '1px solid black', padding: '8px' }}>
-                      <button onClick={() => handleEditBook(book.id)} style={{ marginRight: '8px' }}>Edit</button>
-                      <button onClick={() => handleDeleteSelected(book.id)}>Delete</button>
+                      <button
+                        onClick={() => handleEditBook(book.id)}
+                        style={{ border: 'none', background: 'none', cursor: 'pointer' }}
+                      >
+                        <FaEdit size={20} />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteSelected(book.id)}
+                        style={{ border: 'none', background: 'none', cursor: 'pointer' }}
+                      >
+                        <FaTrash size={20} />
+                      </button>
+                      <br />
+                      <Link to="/">Show Details</Link>
                     </td>
                   </tr>
                 ))}
