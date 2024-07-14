@@ -54,17 +54,6 @@ const ManageBooksPage = () => {
     navigate(`/edit-book/${id}`);
   };
 
-  // Dummy data
-  const dummyData = Array.from({ length: 10 }, (_, index) => ({
-    id: `dummy${index + 1}`,
-    image: 'https://via.placeholder.com/50', // Placeholder image URL
-    title: `Dummy Book ${index + 1}`,
-    author: `Author ${index + 1}`,
-    genre: `Genre ${index + 1}`,
-    publicationDate: `2024-01-${index + 1}`,
-    price: (index + 1) * 100
-  }));
-
   // Filtered and sorted data
   const filteredBooks = books.filter(book => 
     book.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -80,14 +69,11 @@ const ManageBooksPage = () => {
   };
 
   // Pagination logic
-  const totalItems = filteredBooks.length + dummyData.length;
+  const totalItems = filteredBooks.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   
   // Get current page data
-  const currentItems = sortData([
-    ...dummyData,
-    ...filteredBooks
-  ]).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const currentItems = sortData(filteredBooks).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   // Change page handler
   const handlePageChange = (page) => {
@@ -163,7 +149,7 @@ const ManageBooksPage = () => {
                       if (selectedBooks.size === totalItems) {
                         setSelectedBooks(new Set());
                       } else {
-                        setSelectedBooks(new Set([...dummyData.map(book => book.id), ...filteredBooks.map(book => book.id)]));
+                        setSelectedBooks(new Set(filteredBooks.map(book => book.id)));
                       }
                     }}
                     checked={selectedBooks.size === totalItems}
@@ -229,7 +215,7 @@ const ManageBooksPage = () => {
                   </td>
                   <td className="border border-gray-300 p-2">{book.title}</td>
                   <td className="border border-gray-300 p-2">
-                    <Link to={`/manage-authors`} className="text-blue-500 hover:underline">{book.author}</Link>
+                    <Link to="/manage-authors" className="text-blue-500 hover:underline">{book.author}</Link>
                   </td>
                   <td className="border border-gray-300 p-2">{book.genre}</td>
                   <td className="border border-gray-300 p-2">{new Date(book.publicationDate).toLocaleDateString()}</td>
