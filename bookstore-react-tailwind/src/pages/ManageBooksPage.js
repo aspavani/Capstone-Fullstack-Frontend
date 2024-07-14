@@ -103,157 +103,154 @@ const ManageBooksPage = () => {
 
   return (
     <div className="flex">
-      {/* Main Content */}
-      <div className="flex">
-        {/* Left Section with Nav */}
-        <nav className="w-64 bg-gray-800 text-white min-h-screen p-4 space-y-4">
-          <ul>
-            <li>
-              <Link to="/" className="block py-2 px-4 hover:bg-gray-700 rounded">Home</Link>
-            </li>
-            <li>
-              <Link to="/manage-books" className="block py-2 px-4 bg-gray-700 rounded">Manage Books</Link>
-            </li>
-            <li>
-              <Link to="/manage-authors" className="block py-2 px-4 hover:bg-gray-700 rounded">Manage Authors</Link>
-            </li>
-            <li>
-              <Link to="/manage-genres" className="block py-2 px-4 hover:bg-gray-700 rounded">Manage Genres</Link>
-            </li>
-          </ul>
-        </nav>
+      {/* Left Section with Nav */}
+      <nav className="w-64 bg-gray-800 text-white min-h-screen p-4 space-y-4">
+        <ul>
+          <li>
+            <Link to="/" className="block py-2 px-4 hover:bg-gray-700 rounded">Home</Link>
+          </li>
+          <li>
+            <Link to="/manage-books" className="block py-2 px-4 bg-gray-700 rounded">Manage Books</Link>
+          </li>
+          <li>
+            <Link to="/manage-authors" className="block py-2 px-4 hover:bg-gray-700 rounded">Manage Authors</Link>
+          </li>
+          <li>
+            <Link to="/manage-genres" className="block py-2 px-4 hover:bg-gray-700 rounded">Manage Genres</Link>
+          </li>
+        </ul>
+      </nav>
 
-        {/* Right Section with Book Table */}
-        <div className="flex-1 p-4">
-          <div className="mb-4">
-            <button
-              onClick={handleDeleteSelected}
-              disabled={selectedBooks.size === 0}
-              className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
-            >
-              Delete Selected
-            </button>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="border border-gray-300 p-2">
+      {/* Right Section with Book Table */}
+      <div className="flex-1 p-4">
+        <div className="mb-4">
+          <button
+            onClick={handleDeleteSelected}
+            disabled={selectedBooks.size === 0}
+            className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+          >
+            Delete Selected
+          </button>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="border border-gray-300 p-2">
+                  <input
+                    type="checkbox"
+                    onChange={() => {
+                      if (selectedBooks.size === totalItems) {
+                        setSelectedBooks(new Set());
+                      } else {
+                        setSelectedBooks(new Set([...dummyData.map(book => book.id), ...books.map(book => book.id)]));
+                      }
+                    }}
+                    checked={selectedBooks.size === totalItems}
+                  />
+                </th>
+                <th className="border border-gray-300 p-2 cursor-pointer" onClick={() => handleSort('id')}>
+                  BookId
+                  {sortKey === 'id' && (
+                    <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
+                  )}
+                </th>
+                <th className="border border-gray-300 p-2">Image</th>
+                <th className="border border-gray-300 p-2 cursor-pointer" onClick={() => handleSort('title')}>
+                  Title
+                  {sortKey === 'title' && (
+                    <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
+                  )}
+                </th>
+                <th className="border border-gray-300 p-2 cursor-pointer" onClick={() => handleSort('author')}>
+                  Author
+                  {sortKey === 'author' && (
+                    <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
+                  )}
+                </th>
+                <th className="border border-gray-300 p-2 cursor-pointer" onClick={() => handleSort('genre')}>
+                  Genre
+                  {sortKey === 'genre' && (
+                    <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
+                  )}
+                </th>
+                <th className="border border-gray-300 p-2 cursor-pointer" onClick={() => handleSort('publicationDate')}>
+                  Publication Date
+                  {sortKey === 'publicationDate' && (
+                    <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
+                  )}
+                </th>
+                <th className="border border-gray-300 p-2 cursor-pointer" onClick={() => handleSort('price')}>
+                  Price (₹)
+                  {sortKey === 'price' && (
+                    <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
+                  )}
+                </th>
+                <th className="border border-gray-300 p-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentItems.map(book => (
+                <tr key={book.id}>
+                  <td className="border border-gray-300 p-2">
                     <input
                       type="checkbox"
-                      onChange={() => {
-                        if (selectedBooks.size === totalItems) {
-                          setSelectedBooks(new Set());
-                        } else {
-                          setSelectedBooks(new Set([...dummyData.map(book => book.id), ...books.map(book => book.id)]));
-                        }
-                      }}
-                      checked={selectedBooks.size === totalItems}
+                      checked={selectedBooks.has(book.id)}
+                      onChange={() => handleCheckboxChange(book.id)}
                     />
-                  </th>
-                  <th className="border border-gray-300 p-2 cursor-pointer" onClick={() => handleSort('id')}>
-                    BookId
-                    {sortKey === 'id' && (
-                      <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
-                    )}
-                  </th>
-                  <th className="border border-gray-300 p-2">Image</th>
-                  <th className="border border-gray-300 p-2 cursor-pointer" onClick={() => handleSort('title')}>
-                    Title
-                    {sortKey === 'title' && (
-                      <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
-                    )}
-                  </th>
-                  <th className="border border-gray-300 p-2 cursor-pointer" onClick={() => handleSort('author')}>
-                    Author
-                    {sortKey === 'author' && (
-                      <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
-                    )}
-                  </th>
-                  <th className="border border-gray-300 p-2 cursor-pointer" onClick={() => handleSort('genre')}>
-                    Genre
-                    {sortKey === 'genre' && (
-                      <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
-                    )}
-                  </th>
-                  <th className="border border-gray-300 p-2 cursor-pointer" onClick={() => handleSort('publicationDate')}>
-                    Publication Date
-                    {sortKey === 'publicationDate' && (
-                      <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
-                    )}
-                  </th>
-                  <th className="border border-gray-300 p-2 cursor-pointer" onClick={() => handleSort('price')}>
-                    Price (₹)
-                    {sortKey === 'price' && (
-                      <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
-                    )}
-                  </th>
-                  <th className="border border-gray-300 p-2">Actions</th>
+                  </td>
+                  <td className="border border-gray-300 p-2">{book.id}</td>
+                  <td className="border border-gray-300 p-2">
+                    <img
+                      src={book.image}
+                      alt={book.title}
+                      className="w-12 h-12 object-cover rounded-md"
+                    />
+                  </td>
+                  <td className="border border-gray-300 p-2">{book.title}</td>
+                  <td className="border border-gray-300 p-2">{book.author}</td>
+                  <td className="border border-gray-300 p-2">{book.genre}</td>
+                  <td className="border border-gray-300 p-2">{new Date(book.publicationDate).toLocaleDateString()}</td>
+                  <td className="border border-gray-300 p-2">{book.price}</td>
+                  <td className="border border-gray-300 p-2">
+                    <button
+                      onClick={() => handleEditBook(book.id)}
+                      className="text-blue-500 hover:text-blue-700 mr-2"
+                    >
+                      <FaEdit size={20} />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteSelected(book.id)}
+                      className="text-red-500 hover:text-red-700 mr-2"
+                    >
+                      <FaTrash size={20} />
+                    </button>
+                    <br />
+                    <Link to={`/book-details/${book.id}`} className="text-blue-500 hover:underline">Show Details</Link>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {currentItems.map(book => (
-                  <tr key={book.id}>
-                    <td className="border border-gray-300 p-2">
-                      <input
-                        type="checkbox"
-                        checked={selectedBooks.has(book.id)}
-                        onChange={() => handleCheckboxChange(book.id)}
-                      />
-                    </td>
-                    <td className="border border-gray-300 p-2">{book.id}</td>
-                    <td className="border border-gray-300 p-2">
-                      <img
-                        src={book.image}
-                        alt={book.title}
-                        className="w-12 h-12 object-cover rounded-md"
-                      />
-                    </td>
-                    <td className="border border-gray-300 p-2">{book.title}</td>
-                    <td className="border border-gray-300 p-2">{book.author}</td>
-                    <td className="border border-gray-300 p-2">{book.genre}</td>
-                    <td className="border border-gray-300 p-2">{new Date(book.publicationDate).toLocaleDateString()}</td>
-                    <td className="border border-gray-300 p-2">{book.price}</td>
-                    <td className="border border-gray-300 p-2">
-                      <button
-                        onClick={() => handleEditBook(book.id)}
-                        className="text-blue-500 hover:text-blue-700 mr-2"
-                      >
-                        <FaEdit size={20} />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteSelected(book.id)}
-                        className="text-red-500 hover:text-red-700 mr-2"
-                      >
-                        <FaTrash size={20} />
-                      </button>
-                      <br />
-                      <Link to="/" className="text-blue-500 hover:underline">Show Details</Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          
-          {/* Pagination Controls */}
-          <div className="mt-4 text-center">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400"
-            >
-              Previous
-            </button>
-            <span className="mx-4">Page {currentPage} of {totalPages}</span>
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400"
-            >
-              Next
-            </button>
-          </div>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        
+        {/* Pagination Controls */}
+        <div className="mt-4 text-center">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400"
+          >
+            Previous
+          </button>
+          <span className="mx-4">Page {currentPage} of {totalPages}</span>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400"
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>
