@@ -1,6 +1,7 @@
+// src/pages/ManageBooksPage.js
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FaEdit, FaTrash } from 'react-icons/fa'; // Import icons from react-icons
+import { Link, useNavigate } from 'react-router-dom';
+import { FaEdit, FaTrash } from 'react-icons/fa';
 
 const ManageBooksPage = () => {
   const [books, setBooks] = useState([]);
@@ -9,6 +10,7 @@ const ManageBooksPage = () => {
   const [sortKey, setSortKey] = useState('id'); // Default sort by ID
   const [sortDirection, setSortDirection] = useState('asc'); // Default ascending
   const itemsPerPage = 5; // Number of items per page
+  const navigate = useNavigate();
 
   // Fetch the list of books from the API when the component mounts
   useEffect(() => {
@@ -49,7 +51,7 @@ const ManageBooksPage = () => {
 
   // Placeholder functions for handling book actions
   const handleEditBook = (id) => {
-    console.log('Edit book with id:', id);
+    navigate(`/edit-book/${id}`);
   };
 
   // Dummy data
