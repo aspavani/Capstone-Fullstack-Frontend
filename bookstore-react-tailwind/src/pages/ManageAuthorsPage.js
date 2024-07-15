@@ -75,7 +75,7 @@ const ManageAuthorsPage = () => {
   };
 
   const handleAddAuthorClick = () => {
-    navigate("/add-author"); // Redirect to the AddAuthorPage
+    navigate("/add-author?redirect=/manage-authors"); // Redirect to the AddAuthorPage
   };
 
   return (

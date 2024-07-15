@@ -173,7 +173,7 @@ const AddBookPage = () => {
                 </select>
                 <button
                   type="button"
-                  onClick={() => navigate("/add-author")}
+                  onClick={() => navigate("/add-author?redirect=/add-book")}
                   className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                 >
                   <PlusCircleIcon className="h-6 w-6" aria-hidden="true" />

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { PhotoIcon } from "@heroicons/react/24/outline"; // Import PhotoIcon for image upload
 import Layout from "../components/Layout";
 
@@ -10,6 +10,11 @@ const AddAuthorPage = () => {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Extract the redirect parameter from the URL
+  const queryParams = new URLSearchParams(location.search);
+  const redirectUrl = queryParams.get("redirect") || "/manage-authors"; // Default to /manage-authors if not specified
 
   const handleImageChange = (e) => {
     setAuthorImage(e.target.files[0]);
@@ -33,7 +38,7 @@ const AddAuthorPage = () => {
 
       if (response.ok) {
         setSuccessMessage("Author added successfully!");
-        setTimeout(() => navigate("/add-book"), 2000); // Redirect after 2 seconds
+        setTimeout(() => navigate(redirectUrl), 2000); // Redirect after 2 seconds to the URL specified
       } else {
         const data = await response.json();
         setError(data.message || "Failed to add the author");
