@@ -185,44 +185,6 @@ const ManageBooksPage = () => {
   return (
     <Layout>
       <div className="flex">
-        {/* Left Section with Nav */}
-        <nav className="w-64 bg-gray-800 text-white min-h-screen p-4 space-y-4">
-          <ul>
-            <li>
-              <Link
-                to="/"
-                className="block py-2 px-4 hover:bg-gray-700 rounded"
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/manage-books"
-                className="block py-2 px-4 bg-gray-700 rounded"
-              >
-                Manage Books
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/manage-authors"
-                className="block py-2 px-4 hover:bg-gray-700 rounded"
-              >
-                Manage Authors
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/manage-genres"
-                className="block py-2 px-4 hover:bg-gray-700 rounded"
-              >
-                Manage Genres
-              </Link>
-            </li>
-          </ul>
-        </nav>
-
         {/* Right Section with Book Table */}
         <div className="flex-1 p-4">
           {successMessage && (
