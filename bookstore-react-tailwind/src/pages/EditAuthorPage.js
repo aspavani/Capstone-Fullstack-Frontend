@@ -1,3 +1,5 @@
+// src/pages/EditAuthorPage.js
+
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Layout from "../components/Layout";
@@ -14,7 +16,7 @@ const EditAuthorPage = () => {
   useEffect(() => {
     const fetchAuthor = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/authors/${id}`);
+        const response = await fetch(`http://localhost:5000/author/${id}`);
         const data = await response.json();
         setAuthor(data);
         setAuthorName(data.author_name);
@@ -40,7 +42,7 @@ const EditAuthorPage = () => {
 
     try {
       const response = await fetch(`http://localhost:5000/author/${id}`, {
-        method: "POST",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedAuthor),
       });

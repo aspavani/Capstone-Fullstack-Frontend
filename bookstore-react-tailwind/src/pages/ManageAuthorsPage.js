@@ -1,14 +1,15 @@
 // src/pages/ManageAuthors.js
 
 import React, { useState, useEffect } from "react";
-import Layout from "../components/Layout"; // Import Layout component
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline"; // Import icons
+import { useNavigate } from "react-router-dom";
+import Layout from "../components/Layout";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 const ManageAuthors = () => {
   const [authors, setAuthors] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch authors from the API
     const fetchAuthors = async () => {
       try {
         const response = await fetch("http://localhost:5000/authors");
@@ -21,6 +22,10 @@ const ManageAuthors = () => {
 
     fetchAuthors();
   }, []);
+
+  const handleEdit = (id) => {
+    navigate(`/edit-author/${id}`);
+  };
 
   return (
     <Layout>
@@ -48,6 +53,7 @@ const ManageAuthors = () => {
             <div className="flex space-x-2">
               <button
                 type="button"
+                onClick={() => handleEdit(author.author_id)}
                 className="text-blue-500 hover:text-blue-700"
                 aria-label="Edit Author"
               >
