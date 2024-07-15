@@ -7,6 +7,7 @@ import ManageAuthorsPage from './pages/ManageAuthorsPage';
 import ManageGenresPage from './pages/ManageGenresPage';
 import EditBookPage from './pages/EditBookPage';
 import BookDetailsPage from './pages/BookDetailsPage';
+import AuthorProfilePage from './pages/AuthorProfilePage';
 
 function App()  {
   return (
@@ -18,6 +19,7 @@ function App()  {
       <Route path="/manage-genres" element={<ManageGenresPage />} />
       <Route path="/edit-book/:id" element={<EditBookPage />} />
       <Route path="/book-details/:id" element={<BookDetailsPage />} />
+      <Route path="/author/:authorId" element={<AuthorProfilePage />} />
   </Routes>
 );
 }
