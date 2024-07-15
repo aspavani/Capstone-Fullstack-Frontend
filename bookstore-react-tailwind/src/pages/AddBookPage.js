@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { PlusCircleIcon } from '@heroicons/react/24/outline'; // Import the PlusCircleIcon
 
 const AddBookPage = () => {
   const [title, setTitle] = useState('');
@@ -126,38 +127,56 @@ const AddBookPage = () => {
 
           <div>
             <label htmlFor="author" className="block text-sm font-medium text-gray-700">Author</label>
-            <select
-              id="author"
-              value={selectedAuthor}
-              onChange={(e) => setSelectedAuthor(e.target.value)}
-              required
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-3"
-            >
-              <option value="">Select Author</option>
-              {authors.map(author => (
-                <option key={author.author_id} value={author.author_id}>
-                  {author.author_name}
-                </option>
-              ))}
-            </select>
+            <div className="flex items-center space-x-4">
+              <select
+                id="author"
+                value={selectedAuthor}
+                onChange={(e) => setSelectedAuthor(e.target.value)}
+                required
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-3"
+              >
+                <option value="">Select Author</option>
+                {authors.map(author => (
+                  <option key={author.author_id} value={author.author_id}>
+                    {author.author_name}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                onClick={() => navigate('/add-author')}
+                className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              >
+                <PlusCircleIcon className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </div>
           </div>
 
           <div>
             <label htmlFor="genre" className="block text-sm font-medium text-gray-700">Genre</label>
-            <select
-              id="genre"
-              value={selectedGenre}
-              onChange={(e) => setSelectedGenre(e.target.value)}
-              required
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-3"
-            >
-              <option value="">Select Genre</option>
-              {genres.map(genre => (
-                <option key={genre.genre_id} value={genre.genre_id}>
-                  {genre.genre_name}
-                </option>
-              ))}
-            </select>
+            <div className="flex items-center space-x-4">
+              <select
+                id="genre"
+                value={selectedGenre}
+                onChange={(e) => setSelectedGenre(e.target.value)}
+                required
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-3"
+              >
+                <option value="">Select Genre</option>
+                {genres.map(genre => (
+                  <option key={genre.genre_id} value={genre.genre_id}>
+                    {genre.genre_name}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                onClick={() => navigate('/add-genre')}
+                className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              >
+                <PlusCircleIcon className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </div>
           </div>
 
           <div>

@@ -9,6 +9,8 @@ import EditBookPage from './pages/EditBookPage';
 import BookDetailsPage from './pages/BookDetailsPage';
 import AuthorProfilePage from './pages/AuthorProfilePage';
 import AddBookPage from './pages/AddBookPage';
+import AddAuthorPage from './pages/AddAuthorPage';
+import AddGenrePage from './pages/AddGenrePage';
 
 function App()  {
   return (
@@ -22,6 +24,8 @@ function App()  {
       <Route path="/book-details/:id" element={<BookDetailsPage />} />
       <Route path="/author-profile/:authorId" element={<AuthorProfilePage />} />
       <Route path="/add-book" element={<AddBookPage />} />
+      <Route path="/add-author" element={<AddAuthorPage />} />
+      <Route path="/add-genre" element={<AddGenrePage />} />
   </Routes>
 );
 }
