@@ -1,15 +1,15 @@
+// src/pages/HomePage.js
+
 import React from 'react';
+import Layout from '../components/Layout';
 
 const HomePage = () => {
   return (
-    <div>
-      <header>
-        <h1>Home Page</h1>
-      </header>
-      <main>
-        {/* The content of the home page will be added later */}
-      </main>
-    </div>
+    <Layout>
+      <p className="text-gray-700 text-lg">
+        Welcome to the Admin Dashboard! Here you can manage your books, authors, and genres efficiently. Use the sidebar to navigate through different sections and make updates as needed.
+      </p>
+    </Layout>
   );
 };
 
