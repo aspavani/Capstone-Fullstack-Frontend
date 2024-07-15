@@ -72,6 +72,11 @@ const AddBookPage = () => {
     }
   };
 
+  // Handle the cancel button click
+  const handleCancel = () => {
+    navigate('/manage-books');
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
       <div className="w-full max-w-3xl bg-white p-8 rounded-lg shadow-lg">
@@ -190,7 +195,14 @@ const AddBookPage = () => {
             />
           </div>
 
-          <div className="flex justify-end">
+          <div className="flex justify-end space-x-4">
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="bg-gray-500 text-white py-3 px-6 rounded-md shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+            >
+              Cancel
+            </button>
             <button
               type="submit"
               className="bg-blue-500 text-white py-3 px-6 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
