@@ -1,12 +1,16 @@
-// src/pages/ManageAuthors.js
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
+import ConfirmationModal from "../components/ConfirmationModal";
+import FloatingAlert from "../components/FloatingAlert";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
-const ManageAuthors = () => {
+const ManageAuthorsPage = () => {
   const [authors, setAuthors] = useState([]);
+  const [selectedAuthorId, setSelectedAuthorId] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("success"); // success, error, or warning
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,51 +31,101 @@ const ManageAuthors = () => {
     navigate(`/edit-author/${id}`);
   };
 
+  const handleDeleteClick = (id) => {
+    setSelectedAuthorId(id);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/author/${selectedAuthorId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        setAlertMessage("Author deleted successfully!");
+        setAlertType("success");
+        setAuthors(
+          authors.filter((author) => author.author_id !== selectedAuthorId)
+        );
+      } else {
+        const data = await response.json();
+        setAlertMessage(data.message || "Failed to delete author");
+        setAlertType("error");
+      }
+    } catch (error) {
+      setAlertMessage("An error occurred while deleting the author");
+      setAlertType("error");
+    } finally {
+      setIsModalOpen(false);
+      // Wait for modal to close before showing the alert
+      setTimeout(() => setAlertMessage(""), 3000); // Alert disappears after 3 seconds
+    }
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <Layout>
       <h1 className="text-3xl font-semibold mb-6 text-gray-800">
         Manage Authors
       </h1>
 
-      <div className="grid gap-6 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {authors.map((author) => (
           <div
             key={author.author_id}
-            className="bg-white p-4 rounded-lg shadow-lg flex flex-col items-center"
+            className="bg-white border border-gray-200 rounded-lg shadow-md p-4"
           >
             <img
               src={author.imageUrl}
               alt={author.author_name}
-              className="w-24 h-24 rounded-full object-cover mb-4"
+              className="w-24 h-24 object-cover rounded-full mx-auto mb-4"
             />
-            <h2 className="text-xl font-bold mb-2 text-gray-800">
+            <h3 className="text-xl font-semibold mb-2 text-center">
               {author.author_name}
-            </h2>
-            <p className="text-sm text-gray-600 text-center mb-4">
-              {author.biography}
-            </p>
-            <div className="flex space-x-2">
+            </h3>
+            <p className="text-sm text-gray-700 mb-4">{author.biography}</p>
+            <div className="flex justify-between">
               <button
-                type="button"
                 onClick={() => handleEdit(author.author_id)}
-                className="text-blue-500 hover:text-blue-700"
-                aria-label="Edit Author"
+                className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
               >
-                <PencilIcon className="h-5 w-5" />
+                <PencilIcon className="h-5 w-5" aria-hidden="true" />
               </button>
               <button
-                type="button"
-                className="text-red-500 hover:text-red-700"
-                aria-label="Delete Author"
+                onClick={() => handleDeleteClick(author.author_id)}
+                className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
               >
-                <TrashIcon className="h-5 w-5" />
+                <TrashIcon className="h-5 w-5" aria-hidden="true" />
               </button>
             </div>
           </div>
         ))}
       </div>
+
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        onConfirm={handleDeleteConfirm}
+        message="Are you sure you want to delete this author?"
+      />
+
+      {/* Display the FloatingAlert only if alertMessage is not empty */}
+      {alertMessage && (
+        <FloatingAlert
+          message={alertMessage}
+          type={alertType}
+          onClose={() => setAlertMessage("")}
+        />
+      )}
     </Layout>
   );
 };
 
-export default ManageAuthors;
+export default ManageAuthorsPage;
