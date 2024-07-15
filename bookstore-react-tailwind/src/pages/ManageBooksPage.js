@@ -196,7 +196,7 @@ const ManageBooksPage = () => {
 
         <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
           <Link
-            to="/add-book" // Adjust this route to your actual add-book route
+            to="/add-book" // Route to AddBookPage
             className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
           >
             Add New Book
@@ -288,7 +288,7 @@ const ManageBooksPage = () => {
                   <td className="border border-gray-300 p-2">{book.book_id}</td>
                   <td className="border border-gray-300 p-2">
                     <img
-                      src="https://via.placeholder.com/50" // Placeholder image
+                      src={book.image || 'https://via.placeholder.com/50'} // Use actual book image if available
                       alt={book.title}
                       className="w-12 h-12 object-cover rounded-md"
                     />
