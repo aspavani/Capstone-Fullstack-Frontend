@@ -1,4 +1,3 @@
-// AddBookPage.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,6 +10,8 @@ const AddBookPage = () => {
   const [selectedAuthor, setSelectedAuthor] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('');
   const [image, setImage] = useState(null);
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,6 +42,9 @@ const AddBookPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccessMessage('');
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('price', price);
@@ -56,99 +60,127 @@ const AddBookPage = () => {
       });
 
       if (response.ok) {
-        navigate('/manage-books');
+        setSuccessMessage('Book added successfully!');
+        setTimeout(() => navigate('/manage-books'), 2000); // Redirect after 2 seconds
       } else {
-        console.error('Failed to add the book');
+        const data = await response.json();
+        setError(data.message || 'Failed to add the book');
       }
     } catch (error) {
-      console.error('Error adding the book:', error);
+      setError('An error occurred while adding the book');
     }
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Add New Book</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Title</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            className="border p-2 w-full"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Price</label>
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            required
-            className="border p-2 w-full"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Publication Date</label>
-          <input
-            type="date"
-            value={publicationDate}
-            onChange={(e) => setPublicationDate(e.target.value)}
-            required
-            className="border p-2 w-full"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Author</label>
-          <select
-            value={selectedAuthor}
-            onChange={(e) => setSelectedAuthor(e.target.value)}
-            required
-            className="border p-2 w-full"
-          >
-            <option value="">Select Author</option>
-            {authors.map(author => (
-              <option key={author.author_id} value={author.author_id}>
-                {author.author_name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Genre</label>
-          <select
-            value={selectedGenre}
-            onChange={(e) => setSelectedGenre(e.target.value)}
-            required
-            className="border p-2 w-full"
-          >
-            <option value="">Select Genre</option>
-            {genres.map(genre => (
-              <option key={genre.genre_id} value={genre.genre_id}>
-                {genre.genre_name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Image</label>
-          <input
-            type="file"
-            onChange={handleFileChange}
-            required
-            className="border p-2 w-full"
-          />
-        </div>
-        <div>
-          <button
-            type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
-          >
-            Add Book
-          </button>
-        </div>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
+      <div className="w-full max-w-3xl bg-white p-8 rounded-lg shadow-lg">
+        <h1 className="text-3xl font-semibold mb-6 text-gray-800">Add New Book</h1>
+
+        {successMessage && (
+          <div className="bg-green-500 text-white p-4 rounded-md mb-6">
+            {successMessage}
+          </div>
+        )}
+        {error && (
+          <div className="bg-red-500 text-white p-4 rounded-md mb-6">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
+            <input
+              type="text"
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-3"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price (₹)</label>
+            <input
+              type="number"
+              id="price"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-3"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="publicationDate" className="block text-sm font-medium text-gray-700">Publication Date</label>
+            <input
+              type="date"
+              id="publicationDate"
+              value={publicationDate}
+              onChange={(e) => setPublicationDate(e.target.value)}
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-3"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="author" className="block text-sm font-medium text-gray-700">Author</label>
+            <select
+              id="author"
+              value={selectedAuthor}
+              onChange={(e) => setSelectedAuthor(e.target.value)}
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-3"
+            >
+              <option value="">Select Author</option>
+              {authors.map(author => (
+                <option key={author.author_id} value={author.author_id}>
+                  {author.author_name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="genre" className="block text-sm font-medium text-gray-700">Genre</label>
+            <select
+              id="genre"
+              value={selectedGenre}
+              onChange={(e) => setSelectedGenre(e.target.value)}
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-3"
+            >
+              <option value="">Select Genre</option>
+              {genres.map(genre => (
+                <option key={genre.genre_id} value={genre.genre_id}>
+                  {genre.genre_name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="image" className="block text-sm font-medium text-gray-700">Image</label>
+            <input
+              type="file"
+              id="image"
+              onChange={handleFileChange}
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+            />
+          </div>
+
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="bg-blue-500 text-white py-3 px-6 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            >
+              Add Book
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
