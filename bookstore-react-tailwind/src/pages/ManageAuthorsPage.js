@@ -3,7 +3,11 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import ConfirmationModal from "../components/ConfirmationModal";
 import FloatingAlert from "../components/FloatingAlert";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  PencilIcon,
+  TrashIcon,
+  PlusCircleIcon,
+} from "@heroicons/react/24/outline"; // Import PlusCircleIcon
 
 const ManageAuthorsPage = () => {
   const [authors, setAuthors] = useState([]);
@@ -39,7 +43,7 @@ const ManageAuthorsPage = () => {
   const handleDeleteConfirm = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/author/${selectedAuthorId}`,
+        `http://localhost:5000/authors/${selectedAuthorId}`,
         {
           method: "DELETE",
         }
@@ -70,11 +74,22 @@ const ManageAuthorsPage = () => {
     setIsModalOpen(false);
   };
 
+  const handleAddAuthorClick = () => {
+    navigate("/add-author"); // Redirect to the AddAuthorPage
+  };
+
   return (
     <Layout>
-      <h1 className="text-3xl font-semibold mb-6 text-gray-800">
-        Manage Authors
-      </h1>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-3xl font-semibold text-gray-800">Manage Authors</h1>
+        <button
+          onClick={handleAddAuthorClick}
+          className="bg-green-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 flex items-center space-x-2"
+        >
+          <PlusCircleIcon className="h-5 w-5" aria-hidden="true" />
+          <span>Add Author</span>
+        </button>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {authors.map((author) => (
