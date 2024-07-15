@@ -45,7 +45,7 @@ const BookDetailsPage = () => {
           <p className="text-base text-gray-700 mb-2">
             <strong>Author:</strong>{' '}
             <Link
-              to={`/author/${book.author_id}`} // Link to the author's profile page
+              to={`/author-profile/${book.author_id}`} // Link to the author's profile page
               className="text-blue-500 hover:underline"
             >
               {book.author.author_name}

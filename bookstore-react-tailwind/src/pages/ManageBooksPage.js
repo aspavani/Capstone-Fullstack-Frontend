@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaEdit, FaTrash, FaEye } from 'react-icons/fa';
+import { FaEdit, FaTrash } from 'react-icons/fa';
 
 const ManageBooksPage = () => {
   const [books, setBooks] = useState([]);
@@ -215,12 +215,14 @@ const ManageBooksPage = () => {
                   </td>
                   <td className="border border-gray-300 p-2">{book.title}</td>
                   <td className="border border-gray-300 p-2">
-                    <Link to="/manage-authors" className="text-blue-500 hover:underline">{book.author.name}</Link>
+                    <Link to={`/author-profile/${book.author.author_id}`} className="text-blue-500 hover:underline">
+                      {book.author.author_name}
+                    </Link>
                   </td>
                   <td className="border border-gray-300 p-2">{book.genre.genre_name}</td>
                   <td className="border border-gray-300 p-2">{new Date(book.publication_date).toLocaleDateString()}</td>
                   <td className="border border-gray-300 p-2">{book.price}</td>
-                  <td className="border border-gray-300 p-2 text-center">
+                  <td className="border border-gray-300 p-2">
                     <button
                       onClick={() => handleEditBook(book.book_id)}
                       className="text-blue-500 hover:text-blue-700 mr-2"
@@ -234,13 +236,7 @@ const ManageBooksPage = () => {
                       <FaTrash size={20} />
                     </button>
                     <br />
-                    <Link
-                      to={`/book-details/${book.book_id}`}
-                      className="text-blue-500 hover:underline flex items-center justify-center"
-                    >
-                      <FaEye size={20} className="mr-1" />
-                      Show Details
-                    </Link>
+                    <Link to={`/book-details/${book.book_id}`} className="text-blue-500 hover:underline">Show Details</Link>
                   </td>
                 </tr>
               ))}

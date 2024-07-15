@@ -19,7 +19,7 @@ function App()  {
       <Route path="/manage-genres" element={<ManageGenresPage />} />
       <Route path="/edit-book/:id" element={<EditBookPage />} />
       <Route path="/book-details/:id" element={<BookDetailsPage />} />
-      <Route path="/author/:authorId" element={<AuthorProfilePage />} />
+      <Route path="/author-profile/:authorId" element={<AuthorProfilePage />} />
   </Routes>
 );
 }
