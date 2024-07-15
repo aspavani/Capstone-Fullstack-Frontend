@@ -2,6 +2,35 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 
+// Modal Component
+const Modal = ({ isOpen, onClose, onConfirm, bookId }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
+      <div className="bg-white p-6 rounded-lg shadow-lg z-10">
+        <h2 className="text-xl mb-4">Confirm Deletion</h2>
+        <p>Are you sure you want to delete this book?</p>
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={onClose}
+            className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 mr-2"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => onConfirm(bookId)}
+            className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const ManageBooksPage = () => {
   const [books, setBooks] = useState([]);
   const [selectedBooks, setSelectedBooks] = useState(new Set());
@@ -9,6 +38,9 @@ const ManageBooksPage = () => {
   const [sortKey, setSortKey] = useState('book_id'); // Default sort by book_id
   const [sortDirection, setSortDirection] = useState('asc'); // Default ascending
   const [searchTerm, setSearchTerm] = useState(''); // For search functionality
+  const [successMessage, setSuccessMessage] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+  const [bookToDelete, setBookToDelete] = useState(null); // Book ID for deletion confirmation
   const itemsPerPage = 5; // Number of items per page
   const navigate = useNavigate();
 
@@ -40,12 +72,54 @@ const ManageBooksPage = () => {
     });
   };
 
+  // Handle delete of a single book
+  const handleDeleteBook = (id) => {
+    setBookToDelete(id);
+    setIsModalOpen(true);
+  };
+
   // Handle delete of selected books
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = async () => {
     if (window.confirm('Are you sure you want to delete the selected books?')) {
-      const updatedBooks = books.filter(book => !selectedBooks.has(book.book_id));
-      setBooks(updatedBooks);
-      setSelectedBooks(new Set());
+      try {
+        await Promise.all(
+          Array.from(selectedBooks).map(id => fetch(`http://localhost:5000/book/${id}`, {
+            method: 'DELETE',
+          }))
+        );
+
+        // Remove deleted books from the list
+        const updatedBooks = books.filter(book => !selectedBooks.has(book.book_id));
+        setBooks(updatedBooks);
+        setSelectedBooks(new Set());
+        setSuccessMessage('Selected books deleted successfully');
+        setTimeout(() => setSuccessMessage(''), 3000); // Clear message after 3 seconds
+      } catch (error) {
+        console.error('Error deleting selected books:', error);
+      }
+    }
+  };
+
+  // Confirm delete of a book
+  const handleConfirmDelete = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:5000/book/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        // Remove the deleted book from the list
+        setBooks(prevBooks => prevBooks.filter(book => book.book_id !== id));
+        setSuccessMessage('Book deleted successfully');
+        setTimeout(() => setSuccessMessage(''), 3000); // Clear message after 3 seconds
+      } else {
+        console.error('Failed to delete the book');
+      }
+    } catch (error) {
+      console.error('Error deleting book:', error);
+    } finally {
+      setIsModalOpen(false);
+      setBookToDelete(null);
     }
   };
 
@@ -55,7 +129,7 @@ const ManageBooksPage = () => {
   };
 
   // Filtered and sorted data
-  const filteredBooks = books.filter(book => 
+  const filteredBooks = books.filter(book =>
     book.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -114,6 +188,12 @@ const ManageBooksPage = () => {
 
       {/* Right Section with Book Table */}
       <div className="flex-1 p-4">
+        {successMessage && (
+          <div className="bg-green-500 text-white p-4 rounded-md mb-4 shadow-md">
+            {successMessage}
+          </div>
+        )}
+
         <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
           <Link
             to="/add-book" // Adjust this route to your actual add-book route
@@ -230,7 +310,7 @@ const ManageBooksPage = () => {
                       <FaEdit size={20} />
                     </button>
                     <button
-                      onClick={() => handleDeleteSelected(book.book_id)}
+                      onClick={() => handleDeleteBook(book.book_id)}
                       className="text-red-500 hover:text-red-700 mr-2"
                     >
                       <FaTrash size={20} />
@@ -263,6 +343,14 @@ const ManageBooksPage = () => {
           </button>
         </div>
       </div>
+
+      {/* Modal Component */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        bookId={bookToDelete}
+      />
     </div>
   );
 };
