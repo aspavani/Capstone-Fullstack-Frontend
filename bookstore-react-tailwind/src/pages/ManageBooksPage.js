@@ -6,7 +6,7 @@ const ManageBooksPage = () => {
   const [books, setBooks] = useState([]);
   const [selectedBooks, setSelectedBooks] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortKey, setSortKey] = useState('id'); // Default sort by ID
+  const [sortKey, setSortKey] = useState('book_id'); // Default sort by book_id
   const [sortDirection, setSortDirection] = useState('asc'); // Default ascending
   const [searchTerm, setSearchTerm] = useState(''); // For search functionality
   const itemsPerPage = 5; // Number of items per page
@@ -16,7 +16,7 @@ const ManageBooksPage = () => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await fetch('http://localhost:5000/books/');
+        const response = await fetch('http://localhost:5000/books');
         const data = await response.json();
         setBooks(data);
       } catch (error) {
@@ -43,7 +43,7 @@ const ManageBooksPage = () => {
   // Handle delete of selected books
   const handleDeleteSelected = () => {
     if (window.confirm('Are you sure you want to delete the selected books?')) {
-      const updatedBooks = books.filter(book => !selectedBooks.has(book.id));
+      const updatedBooks = books.filter(book => !selectedBooks.has(book.book_id));
       setBooks(updatedBooks);
       setSelectedBooks(new Set());
     }
@@ -53,17 +53,6 @@ const ManageBooksPage = () => {
   const handleEditBook = (id) => {
     navigate(`/edit-book/${id}`);
   };
-
-  // Dummy data
-  const dummyData = Array.from({ length: 10 }, (_, index) => ({
-    id: `dummy${index + 1}`,
-    image: 'https://via.placeholder.com/50', // Placeholder image URL
-    title: `Dummy Book ${index + 1}`,
-    author: `Author ${index + 1}`,
-    genre: `Genre ${index + 1}`,
-    publicationDate: `2024-01-${index + 1}`,
-    price: (index + 1) * 100
-  }));
 
   // Filtered and sorted data
   const filteredBooks = books.filter(book => 
@@ -80,14 +69,11 @@ const ManageBooksPage = () => {
   };
 
   // Pagination logic
-  const totalItems = filteredBooks.length + dummyData.length;
+  const totalItems = filteredBooks.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   
   // Get current page data
-  const currentItems = sortData([
-    ...dummyData,
-    ...filteredBooks
-  ]).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const currentItems = sortData(filteredBooks).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   // Change page handler
   const handlePageChange = (page) => {
@@ -163,15 +149,15 @@ const ManageBooksPage = () => {
                       if (selectedBooks.size === totalItems) {
                         setSelectedBooks(new Set());
                       } else {
-                        setSelectedBooks(new Set([...dummyData.map(book => book.id), ...filteredBooks.map(book => book.id)]));
+                        setSelectedBooks(new Set(filteredBooks.map(book => book.book_id)));
                       }
                     }}
                     checked={selectedBooks.size === totalItems}
                   />
                 </th>
-                <th className="border border-gray-300 p-2 cursor-pointer" onClick={() => handleSort('id')}>
-                  BookId
-                  {sortKey === 'id' && (
+                <th className="border border-gray-300 p-2 cursor-pointer" onClick={() => handleSort('book_id')}>
+                  Book ID
+                  {sortKey === 'book_id' && (
                     <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
                   )}
                 </th>
@@ -194,9 +180,9 @@ const ManageBooksPage = () => {
                     <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
                   )}
                 </th>
-                <th className="border border-gray-300 p-2 cursor-pointer" onClick={() => handleSort('publicationDate')}>
+                <th className="border border-gray-300 p-2 cursor-pointer" onClick={() => handleSort('publication_date')}>
                   Publication Date
-                  {sortKey === 'publicationDate' && (
+                  {sortKey === 'publication_date' && (
                     <span>{sortDirection === 'asc' ? ' ▲' : ' ▼'}</span>
                   )}
                 </th>
@@ -211,44 +197,44 @@ const ManageBooksPage = () => {
             </thead>
             <tbody>
               {currentItems.map(book => (
-                <tr key={book.id}>
+                <tr key={book.book_id}>
                   <td className="border border-gray-300 p-2">
                     <input
                       type="checkbox"
-                      checked={selectedBooks.has(book.id)}
-                      onChange={() => handleCheckboxChange(book.id)}
+                      checked={selectedBooks.has(book.book_id)}
+                      onChange={() => handleCheckboxChange(book.book_id)}
                     />
                   </td>
-                  <td className="border border-gray-300 p-2">{book.id}</td>
+                  <td className="border border-gray-300 p-2">{book.book_id}</td>
                   <td className="border border-gray-300 p-2">
                     <img
-                      src={book.image}
+                      src="https://via.placeholder.com/50" // Placeholder image
                       alt={book.title}
                       className="w-12 h-12 object-cover rounded-md"
                     />
                   </td>
                   <td className="border border-gray-300 p-2">{book.title}</td>
                   <td className="border border-gray-300 p-2">
-                    <Link to={`/manage-authors`} className="text-blue-500 hover:underline">{book.author}</Link>
+                    <Link to="/manage-authors" className="text-blue-500 hover:underline">{book.author.name}</Link>
                   </td>
-                  <td className="border border-gray-300 p-2">{book.genre}</td>
-                  <td className="border border-gray-300 p-2">{new Date(book.publicationDate).toLocaleDateString()}</td>
+                  <td className="border border-gray-300 p-2">{book.genre.genre_name}</td>
+                  <td className="border border-gray-300 p-2">{new Date(book.publication_date).toLocaleDateString()}</td>
                   <td className="border border-gray-300 p-2">{book.price}</td>
                   <td className="border border-gray-300 p-2">
                     <button
-                      onClick={() => handleEditBook(book.id)}
+                      onClick={() => handleEditBook(book.book_id)}
                       className="text-blue-500 hover:text-blue-700 mr-2"
                     >
                       <FaEdit size={20} />
                     </button>
                     <button
-                      onClick={() => handleDeleteSelected(book.id)}
+                      onClick={() => handleDeleteSelected(book.book_id)}
                       className="text-red-500 hover:text-red-700 mr-2"
                     >
                       <FaTrash size={20} />
                     </button>
                     <br />
-                    <Link to={`/book-details/${book.id}`} className="text-blue-500 hover:underline">Show Details</Link>
+                    <Link to={`/book-details/${book.book_id}`} className="text-blue-500 hover:underline">Show Details</Link>
                   </td>
                 </tr>
               ))}
