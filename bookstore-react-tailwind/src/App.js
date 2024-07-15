@@ -1,21 +1,21 @@
-import React from 'react';
-import './styles/tailwind.css'; // Import Tailwind CSS
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import ManageBooksPage from './pages/ManageBooksPage';
-import ManageAuthorsPage from './pages/ManageAuthorsPage';
-import ManageGenresPage from './pages/ManageGenresPage';
-import EditBookPage from './pages/EditBookPage';
-import BookDetailsPage from './pages/BookDetailsPage';
-import AuthorProfilePage from './pages/AuthorProfilePage';
-import AddBookPage from './pages/AddBookPage';
-import AddAuthorPage from './pages/AddAuthorPage';
-import AddGenrePage from './pages/AddGenrePage';
+import React from "react";
+import "./styles/tailwind.css"; // Import Tailwind CSS
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import ManageBooksPage from "./pages/ManageBooksPage";
+import ManageAuthorsPage from "./pages/ManageAuthorsPage";
+import ManageGenresPage from "./pages/ManageGenresPage";
+import EditBookPage from "./pages/EditBookPage";
+import BookDetailsPage from "./pages/BookDetailsPage";
+import AuthorProfilePage from "./pages/AuthorProfilePage";
+import AddBookPage from "./pages/AddBookPage";
+import AddAuthorPage from "./pages/AddAuthorPage";
+import AddGenrePage from "./pages/AddGenrePage";
+import EditAuthorPage from "./pages/EditAuthorPage";
 
-function App()  {
+function App() {
   return (
-   
-  <Routes>
+    <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/manage-books" element={<ManageBooksPage />} />
       <Route path="/manage-authors" element={<ManageAuthorsPage />} />
@@ -26,7 +26,8 @@ function App()  {
       <Route path="/add-book" element={<AddBookPage />} />
       <Route path="/add-author" element={<AddAuthorPage />} />
       <Route path="/add-genre" element={<AddGenrePage />} />
-  </Routes>
-);
+      <Route path="/edit-author/:id" element={<EditAuthorPage />} />
+    </Routes>
+  );
 }
 export default App;
